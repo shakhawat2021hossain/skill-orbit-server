@@ -3,6 +3,7 @@ import type { IUser } from "./auth.interface.js"
 import { User } from "./auth.model.js"
 import { StatusCodes } from "http-status-codes"
 import bcrypt from "bcrypt"
+import { generateTokens } from "../../utils/jwt.js"
 
 const register = async (payload: IUser) => {
     console.log(payload)
@@ -39,12 +40,15 @@ const credentialLogin = async (payload: Partial<IUser>) => {
     }
 
 
+    const tokens = await generateTokens(isExist)
     const user = isExist.toObject()
-
+    
     // delete user.password
 
     return {
-        user
+        user,
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken,
     }
 
 }
