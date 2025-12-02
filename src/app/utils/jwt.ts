@@ -15,3 +15,9 @@ export const generateTokens = async (payload: JwtPayload) => {
         refreshToken
     }
 }
+
+
+export const verifyToken = async(token: string, secret: string) =>{
+    const isVerified = jwt.verify(token, secret) as JwtPayload
+    return isVerified
+}
