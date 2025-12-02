@@ -52,6 +52,9 @@ const getCourseById = catchAsync(async (req: Request, res: Response) => {
         statusCode: StatusCodes.OK
     })
 })
+
+
+
 export const courseControllers = {
     createCourse,
     createLesson,

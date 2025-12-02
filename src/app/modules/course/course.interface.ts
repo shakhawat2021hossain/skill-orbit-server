@@ -24,6 +24,7 @@ export interface ICourse {
     totalDuration?: number;
     resources?: string[];
     createdBy: Types.ObjectId;
+    students?: Types.ObjectId[]
 }
 
 // export interface IModule {
@@ -38,10 +39,3 @@ export interface ILesson {
     courseId: Types.ObjectId;
 }
 
-
-export interface IEnrollment {
-    studentId: Types.ObjectId;
-    courseId: Types.ObjectId;
-    progress: number; 
-    completedLessons: Types.ObjectId[];
-}

@@ -1,5 +1,5 @@
 import { Schema, model, Types } from "mongoose";
-import { Category, type ICourse, type IEnrollment, type ILesson } from "./course.interface.js";
+import { Category, type ICourse, type ILesson } from "./course.interface.js";
 
 // course
 const LessonSchema = new Schema<ILesson>({
@@ -34,6 +34,7 @@ const CourseSchema = new Schema<ICourse>({
     syllabus: [{ type: Schema.Types.ObjectId, ref: "Lesson" }],
     totalDuration: { type: Number, default: 0 },
     resources: { type: [String], default: [] },
+    students: [{ type: Schema.Types.ObjectId, ref: "User" }],
     createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true }
 },
     {
@@ -46,20 +47,3 @@ const CourseSchema = new Schema<ICourse>({
 export const Course = model("Course", CourseSchema);
 
 
-
-
-// enrollment
-const EnrollmentSchema = new Schema<IEnrollment>({
-    studentId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    courseId: { type: Schema.Types.ObjectId, ref: "Course", required: true },
-    progress: { type: Number, default: 0 },
-    completedLessons: { type: [Schema.Types.ObjectId], ref: "Lesson", default: [] }
-},
-    {
-        timestamps: true,
-        versionKey: false,
-
-    }
-);
-
-export const Enrollment = model("Enrollment", EnrollmentSchema);

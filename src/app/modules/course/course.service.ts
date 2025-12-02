@@ -28,10 +28,6 @@ const getCourseById = async (courseId: string) => {
 
 
 
-
-
-
-
 const createLesson = async (payload: ILesson, courseId: string) => {
 
     const lesson = await Lesson.create({ ...payload, courseId })
