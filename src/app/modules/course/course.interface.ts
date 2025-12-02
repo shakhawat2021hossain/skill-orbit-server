@@ -20,16 +20,16 @@ export interface ICourse {
 
     thumbnail?: string;
     tags?: string[];
-    syllabus?: IModule[];
+    syllabus?: ILesson[];
     totalDuration?: number;
     resources?: string[];
     createdBy: Types.ObjectId;
 }
 
-export interface IModule {
-    title: string;
-    lessons: ILesson[];
-}
+// export interface IModule {
+//     title: string;
+//     lessons: ILesson[];
+// }
 
 export interface ILesson {
     title: string;

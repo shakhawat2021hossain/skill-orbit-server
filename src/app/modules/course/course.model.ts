@@ -1,5 +1,5 @@
 import { Schema, model, Types } from "mongoose";
-import { Category, type ICourse, type IEnrollment, type ILesson, type IModule } from "./course.interface.js";
+import { Category, type ICourse, type IEnrollment, type ILesson } from "./course.interface.js";
 
 // course
 const LessonSchema = new Schema<ILesson>({
@@ -9,10 +9,10 @@ const LessonSchema = new Schema<ILesson>({
 }, { _id: true });
 
 
-const ModuleSchema = new Schema<IModule>({
-    title: { type: String, required: true },
-    lessons: { type: [LessonSchema], default: [] }
-}, { _id: true });
+// const ModuleSchema = new Schema<IModule>({
+//     title: { type: String, required: true },
+//     lessons: { type: [LessonSchema], default: [] }
+// }, { _id: true });
 
 
 const CourseSchema = new Schema<ICourse>({
@@ -23,7 +23,7 @@ const CourseSchema = new Schema<ICourse>({
     instructor: { type: String, required: true },
     thumbnail: { type: String },
     tags: { type: [String], default: [] },
-    syllabus: { type: [ModuleSchema], default: [] },
+    syllabus: { type: [LessonSchema], default: [] },
     totalDuration: { type: Number, default: 0 },
     resources: { type: [String], default: [] },
     createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true }

@@ -5,9 +5,9 @@ import { authServices } from "./auth.service.js";
 import { StatusCodes } from "http-status-codes"
 
 
-const register = catchAsync(async(req: Request, response: Response) =>{
-    const result =  await authServices.register(req.body)
-    sendResponse(response, {
+const register = catchAsync(async (req: Request, res: Response) => {
+    const result = await authServices.register(req.body)
+    sendResponse(res, {
         data: result,
         success: true,
         message: "created user successfully!",
@@ -15,9 +15,17 @@ const register = catchAsync(async(req: Request, response: Response) =>{
     })
 })
 
-const credentialLogin = catchAsync(async(req: Request, response: Response) =>{
-    const result =  await authServices.credentialLogin(req.body)
-    sendResponse(response, {
+const credentialLogin = catchAsync(async (req: Request, res: Response) => {
+    const result = await authServices.credentialLogin(req.body)
+
+    res.cookie("accessToken", result.accessToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: 7 * 24 * 60 * 60 * 1000
+    })
+
+    sendResponse(res, {
         data: result,
         success: true,
         message: "Login user successfully!",
