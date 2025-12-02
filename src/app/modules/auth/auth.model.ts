@@ -14,7 +14,7 @@ const userSchema = new Schema<IUser>({
     phone: { type: String },
     picture: { type: String },
     address: { type: String },
-    inistute: { type: String },
+    institute: { type: String },
     isDeleted: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false },
 

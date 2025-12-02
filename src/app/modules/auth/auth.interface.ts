@@ -16,5 +16,5 @@ export interface IUser {
     isDeleted?: boolean;
     address?: string;
     isBlocked?: boolean; 
-    inistute?:string
+    institute?:string
 }
