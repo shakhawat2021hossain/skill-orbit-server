@@ -8,7 +8,7 @@ import { StatusCodes } from "http-status-codes";
 export const auth = (...authRoles: string[]) => async (req: Request, res: Response, next: NextFunction) => {
     try {
         console.log(authRoles);
-        const token = req.cookies.accessToken;
+        const token = req.cookies.accessToken || req.headers.authorization;
         console.log("token in checkauth", token);
         if (!token) {
             throw new AppError(StatusCodes.NOT_FOUND, "No access token found!")
