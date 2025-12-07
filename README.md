@@ -1,4 +1,4 @@
-# coursemaster-server
+# skill-orbit
 
 To install dependencies:
 

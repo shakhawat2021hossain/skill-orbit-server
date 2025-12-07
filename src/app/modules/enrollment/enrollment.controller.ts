@@ -14,7 +14,7 @@ const enroll = catchAsync(async (req: Request, res: Response) => {
     sendResponse(res, {
         data: result,
         success: true,
-        message: "Retrieved course successfully!",
+        message: "Created payment session fot the course successfully!",
         statusCode: StatusCodes.OK
     })
 })

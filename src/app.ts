@@ -4,7 +4,15 @@ import cookieParser from "cookie-parser"
 import notFound from "./app/middleware/notFound.js"
 import globalErrorHandler from "./app/middleware/globalErrorHandler.js"
 import { router } from "./app/routes/index.js"
+import { paymentControllers } from "./app/modules/payment/payment.controller.js"
 const app = express()
+
+app.post(
+    "/webhook",
+    express.raw({ type: "application/json" }),
+    paymentControllers.handleWebhookEvent
+);
+
 
 // middleware
 app.use(cookieParser())

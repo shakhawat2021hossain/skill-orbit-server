@@ -1,5 +1,5 @@
 {
-  "name": "coursemaster-server",
+  "name": "skill-orbit",
   "module": "index.ts",
   "type": "module",
   "private": true,

@@ -7,22 +7,21 @@ import { StatusCodes } from "http-status-codes"
 import { stripe } from "../../utils/stripe.js"
 
 const enroll = async (courseId: string, userId: string) => {
-    const student =  await User.findById(userId)
-    if(!student){
-        throw new AppError(StatusCodes.NOT_FOUND, "Student not Found!")
+    const student = await User.findById(userId);
+    if (!student) {
+        throw new AppError(StatusCodes.NOT_FOUND, "Student not found!");
     }
 
-    const course =  await Course.findById(courseId)
-    if(!course){
-        throw new AppError(StatusCodes.NOT_FOUND, "Course not Found!")
+    const course = await Course.findById(courseId);
+    if (!course) {
+        throw new AppError(StatusCodes.NOT_FOUND, "Course not found!");
     }
 
-
-
-    const enrollment = await Enrollment.create({
+    await Enrollment.create({
         studentId: userId,
         courseId
     })
+
 
 
     const session = await stripe.checkout.sessions.create({
@@ -42,22 +41,15 @@ const enroll = async (courseId: string, userId: string) => {
             },
         ],
         metadata: {
-            courseId: courseId,
-            // paymentId: payment.id
+            courseId,
+            studentId: userId,
         },
         success_url: `https://www.programming-hero.com/`,
         cancel_url: `https://next.programming-hero.com/`,
     });
 
-    await Course.findByIdAndUpdate(
-        courseId,
-        { $addToSet: { students: userId } },
-        { new: true }
-    )
-
-    return {enrollment, session}
-
-}
+    return { session };
+};
 
 const updateProgress = async (courseId: string, studentId: string, lessonId: string) => {
     const enrollment = await Enrollment.findOne({ studentId, courseId });
