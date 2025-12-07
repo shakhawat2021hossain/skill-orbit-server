@@ -54,6 +54,7 @@ const credentialLogin = async (payload: Partial<IUser>) => {
 }
 
 
+
 export const authServices = {
     register,
     credentialLogin

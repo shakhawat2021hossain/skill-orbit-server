@@ -34,8 +34,28 @@ const credentialLogin = catchAsync(async (req: Request, res: Response) => {
 })
 
 
+const logout = catchAsync(async (req: Request, res: Response) => {
+
+    // Clear the access token cookie
+    res.clearCookie("accessToken", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+    })
+
+    sendResponse(res, {
+        data: null,
+        success: true,
+        message: "Logout successful!",
+        statusCode: StatusCodes.OK
+    })
+})
+
+
 
 export const authControllers = {
     register,
-    credentialLogin
+    credentialLogin,
+    logout
 }
+
