@@ -8,7 +8,6 @@ const router = Router()
 router.post('/create-course', auth(Role.INSTRUCTOR), courseControllers.createCourse)
 router.get('/all', courseControllers.getAllCourses)
 router.get('/ins-courses', auth(Role.INSTRUCTOR), courseControllers.getInstructorCourses)
-router.post('/:courseId/create-lesson', auth(Role.INSTRUCTOR), courseControllers.createLesson)
 router.get('/:courseId', courseControllers.getCourseById)
 
 export const courseRoutes = router

@@ -33,18 +33,6 @@ const getCourseById = async (courseId: string) => {
 
 
 
-const createLesson = async (payload: ILesson, courseId: string) => {
-
-    const lesson = await Lesson.create({ ...payload, courseId })
-    await Course.findByIdAndUpdate(
-        courseId,
-        { $push: { syllabus: lesson._id } },
-        { new: true }
-    );
-
-    return lesson
-
-}
 
 
 
@@ -52,7 +40,6 @@ const createLesson = async (payload: ILesson, courseId: string) => {
 
 
 export const courseServices = {
-    createLesson,
     getAllCourses,
     createCourse,
     getCourseById,
