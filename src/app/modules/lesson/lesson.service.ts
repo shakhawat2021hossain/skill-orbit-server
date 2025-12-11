@@ -19,6 +19,7 @@ const createLesson = async (payload: ILesson, courseId: string) => {
 const deleteLesson = async (lessonId: string, courseId: string, instructorId: string) => {
     // Verify the course belongs to the instructor
     const course = await Course.findById(courseId);
+    console.log(lessonId, "lessonid")
     if (!course) {
         throw new AppError(StatusCodes.NOT_FOUND, "Course not found");
     }
@@ -28,6 +29,7 @@ const deleteLesson = async (lessonId: string, courseId: string, instructorId: st
 
     // Verify the lesson belongs to the course
     const lesson = await Lesson.findById(lessonId);
+    console.log(lesson, "lesson")
     if (!lesson || lesson.courseId.toString() !== courseId) {
         throw new AppError(StatusCodes.NOT_FOUND, "Lesson not found in this course");
     }

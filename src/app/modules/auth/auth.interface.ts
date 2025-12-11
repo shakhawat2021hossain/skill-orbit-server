@@ -16,6 +16,13 @@ export interface IUser {
     picture?: string;
     isDeleted?: boolean;
     address?: string;
-    isBlocked?: boolean; 
-    institute?:string
+    isBlocked?: boolean;
+    institute?: string
+
+    // Student fields
+    enrolledCourses?: Types.ObjectId[];
+
+    // Instructor fields
+    publishedCourses?: Types.ObjectId[];
+
 }

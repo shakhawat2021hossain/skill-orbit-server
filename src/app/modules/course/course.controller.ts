@@ -31,12 +31,26 @@ const getAllCourses = catchAsync(async (req: Request, res: Response) => {
 })
 
 const getInstructorCourses = catchAsync(async (req: Request, res: Response) => {
-    const result = await courseServices.getInstructorCourses(req.user?.userId)
+    const result = await courseServices.getInstructorCourses(req.user?.userId as string)
 
     sendResponse(res, {
         data: result,
         success: true,
         message: "Retrieved all courses of the instructor!",
+        statusCode: StatusCodes.OK
+    })
+})
+
+
+const getMyCourses = catchAsync(async (req: Request, res: Response) => {
+    const userId = req.user?.userId as string
+    const role = req.user?.role as string
+    const result = await courseServices.getMyCourses(userId)
+
+    sendResponse(res, {
+        data: result,
+        success: true,
+        message: "Retrieved my courses successfully!",
         statusCode: StatusCodes.OK
     })
 })
@@ -59,5 +73,6 @@ export const courseControllers = {
     createCourse,
     getAllCourses,
     getInstructorCourses,
-    getCourseById
+    getCourseById,
+    getMyCourses
 }

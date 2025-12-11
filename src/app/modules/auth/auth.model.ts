@@ -18,6 +18,21 @@ const userSchema = new Schema<IUser>({
     isDeleted: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false },
 
+    
+    enrolledCourses: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Course",
+        },
+    ],
+    publishedCourses: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Course",
+        },
+    ],
+
+
 }, {
     timestamps: true,
     versionKey: false,

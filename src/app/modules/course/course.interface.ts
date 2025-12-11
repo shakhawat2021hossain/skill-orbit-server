@@ -20,6 +20,7 @@ export interface ICourse {
     description: string;
     price: number;
     category: Category;
+    isPublished: boolean;
     instructor: string;
     introVideo?: string;
     resources?: TResource[]
@@ -37,7 +38,7 @@ export interface ICourse {
 export interface ILesson {
     title: string;
     videoUrl?: string;
-    duration?: number; 
+    duration?: number;
     courseId: Types.ObjectId;
 }
 

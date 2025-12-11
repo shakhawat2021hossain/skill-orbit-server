@@ -22,6 +22,10 @@ const enroll = async (courseId: string, userId: string) => {
         courseId
     })
 
+    await User.findByIdAndUpdate(
+        userId,
+        { $addToSet: { enrolledCourses: courseId } }
+    );
 
 
     const session = await stripe.checkout.sessions.create({
@@ -44,7 +48,7 @@ const enroll = async (courseId: string, userId: string) => {
             courseId,
             studentId: userId,
         },
-        success_url: `https://www.programming-hero.com/`,
+        success_url: `http://localhost:3000/dashboard/my-course`,
         cancel_url: `https://next.programming-hero.com/`,
     });
 
