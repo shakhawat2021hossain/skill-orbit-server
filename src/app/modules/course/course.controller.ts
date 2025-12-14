@@ -68,11 +68,26 @@ const getCourseById = catchAsync(async (req: Request, res: Response) => {
 })
 
 
+const updateCourse = catchAsync(async (req: Request, res: Response) => {
+    const courseId = req.params.courseId as string
+    const instructorId = req.user?.userId as string
+    const result = await courseServices.updateCourse(courseId, instructorId, req.body)
+
+    sendResponse(res, {
+        data: result,
+        success: true,
+        message: "Course updated successfully!",
+        statusCode: StatusCodes.OK
+    })
+})
+
+
 
 export const courseControllers = {
     createCourse,
     getAllCourses,
     getInstructorCourses,
     getCourseById,
-    getMyCourses
+    getMyCourses,
+    updateCourse
 }

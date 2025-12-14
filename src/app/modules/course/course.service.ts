@@ -2,6 +2,8 @@ import type { ICourse, ILesson } from "./course.interface.js"
 import { Course, Lesson } from "./course.model.js"
 import { Enrollment } from "../enrollment/enrollment.model.js"
 import { PaymentStatus } from "../enrollment/enrollment.interface.js"
+import AppError from "../../utils/appError.js";
+import { StatusCodes } from "http-status-codes";
 
 const createCourse = async (payload: ICourse, instructorId: string) => {
     const courseData = {
@@ -60,6 +62,21 @@ const getCourseById = async (courseId: string) => {
 }
 
 
+const updateCourse = async (courseId: string, instructorId: string, payload: Partial<ICourse>) => {
+    const course = await Course.findById(courseId)
+    if (!course) {
+        throw new AppError(StatusCodes.NOT_FOUND, "Course not found")
+    }
+
+    if (course.createdBy.toString() !== instructorId) {
+        throw new AppError(StatusCodes.UNAUTHORIZED, "You can only update your own courses")
+    }
+
+    const updated = await Course.findByIdAndUpdate(courseId, payload, { new: true }).populate("syllabus")
+    return updated
+}
+
+
 
 
 
@@ -74,5 +91,6 @@ export const courseServices = {
     createCourse,
     getCourseById,
     getInstructorCourses,
-    getMyCourses
+    getMyCourses,
+    updateCourse
 }

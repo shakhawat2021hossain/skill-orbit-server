@@ -10,5 +10,6 @@ router.get('/all', courseControllers.getAllCourses)
 router.get('/my-courses', auth(Role.STUDENT), courseControllers.getMyCourses)
 router.get('/ins-courses', auth(Role.INSTRUCTOR), courseControllers.getInstructorCourses)
 router.get('/:courseId', courseControllers.getCourseById)
+router.patch('/:courseId', auth(Role.INSTRUCTOR), courseControllers.updateCourse)
 
 export const courseRoutes = router
