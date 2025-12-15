@@ -62,7 +62,7 @@ const deleteUser = catchAsync(async (req: Request, res: Response) => {
 
 
 const getInstructorDetails = catchAsync(async (req: Request, res: Response) => {
-	const result = await userServices.getInstructorDetails(req.params.userId as string);
+	const result = await userServices.getInstructorDetails(req.user?.userId as string);
 
 	sendResponse(res, {
 		data: result,

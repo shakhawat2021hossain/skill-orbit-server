@@ -14,6 +14,7 @@ export const envVars = {
     ADMIN_PASS: process.env.ADMIN_PASS as string,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY as string,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET as string,
+    FRONTEND_URL: process.env.FRONTEND_URL as string,
 
 
 }

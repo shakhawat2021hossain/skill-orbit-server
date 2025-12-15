@@ -5,6 +5,7 @@ import notFound from "./app/middleware/notFound.js"
 import globalErrorHandler from "./app/middleware/globalErrorHandler.js"
 import { router } from "./app/routes/index.js"
 import { paymentControllers } from "./app/modules/payment/payment.controller.js"
+import { envVars } from "./app/config/envVars.js"
 const app = express()
 
 app.post(
@@ -20,7 +21,7 @@ app.use(cookieParser())
 
 app.use(
     cors({
-        origin: ['http://localhost:5173', 'http://localhost:3000'],
+        origin: ['http://localhost:5173', envVars.FRONTEND_URL],
         credentials: true
     })
 );

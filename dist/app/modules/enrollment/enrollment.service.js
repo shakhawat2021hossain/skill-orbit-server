@@ -1,0 +1,90 @@
+import mongoose from "mongoose";
+import AppError from "../../utils/appError.js";
+import { User } from "../auth/auth.model.js";
+import { Course } from "../course/course.model.js";
+import { Enrollment } from "./enrollment.model.js";
+import { StatusCodes } from "http-status-codes";
+import { stripe } from "../../utils/stripe.js";
+const enroll = async (courseId, userId) => {
+    const student = await User.findById(userId);
+    if (!student) {
+        throw new AppError(StatusCodes.NOT_FOUND, "Student not found!");
+    }
+    const course = await Course.findById(courseId);
+    if (!course) {
+        throw new AppError(StatusCodes.NOT_FOUND, "Course not found!");
+    }
+    await Enrollment.create({
+        studentId: userId,
+        courseId
+    });
+    await User.findByIdAndUpdate(userId, { $addToSet: { enrolledCourses: courseId } });
+    const session = await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        mode: "payment",
+        customer_email: student.email,
+        line_items: [
+            {
+                price_data: {
+                    currency: "bdt",
+                    product_data: {
+                        name: `Course: ${course.title}`,
+                    },
+                    unit_amount: Math.floor(course.price) * 100,
+                },
+                quantity: 1,
+            },
+        ],
+        metadata: {
+            courseId,
+            studentId: userId,
+        },
+        success_url: `http://localhost:3000/dashboard/my-course`,
+        cancel_url: `https://next.programming-hero.com/`,
+    });
+    return { session };
+};
+const updateProgress = async (courseId, studentId, lessonId) => {
+    const enrollment = await Enrollment.findOne({ studentId, courseId });
+    if (!enrollment) {
+        throw new AppError(StatusCodes.NOT_FOUND, "Enrollment not found");
+    }
+    // console.log("progress")
+    const lessonObjectId = new mongoose.Types.ObjectId(lessonId);
+    if (enrollment.completedLessons.includes(lessonObjectId)) {
+        return enrollment;
+    }
+    enrollment.completedLessons.push(lessonObjectId);
+    const course = await Course.findById(courseId).populate("syllabus");
+    if (!course)
+        throw new Error("Course not found");
+    const totalLessons = course.syllabus?.length || 0;
+    enrollment.progress = totalLessons > 0
+        ? Math.floor((enrollment.completedLessons.length / totalLessons) * 100)
+        : 0;
+    await enrollment.save();
+    return enrollment;
+};
+const getEnrolledCourse = async (courseId, userId) => {
+    const course = await Course.findById(courseId).populate("syllabus");
+    if (!course) {
+        throw new AppError(StatusCodes.NOT_FOUND, "Course not found!");
+    }
+    const enrollment = await Enrollment.findOne({ courseId, studentId: userId })
+        .populate({
+        path: "courseId",
+        model: Course,
+        populate: { path: "syllabus" },
+    })
+        .exec();
+    if (!enrollment) {
+        throw new AppError(StatusCodes.NOT_FOUND, "Enrollment not found for this student and course");
+    }
+    return { enrollment, course };
+};
+export const enrollmentServices = {
+    enroll,
+    updateProgress,
+    getEnrolledCourse
+};
+//# sourceMappingURL=enrollment.service.js.map
