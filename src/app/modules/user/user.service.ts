@@ -1,4 +1,4 @@
-import type { IUser } from "../auth/auth.interface.js";
+import { Role, type IUser } from "../auth/auth.interface.js";
 import { User } from "../auth/auth.model.js";
 import AppError from "../../utils/appError.js";
 import { StatusCodes } from "http-status-codes";
@@ -6,35 +6,83 @@ import { Types } from "mongoose";
 import { Course } from "../course/course.model.js";
 import { Enrollment } from "../enrollment/enrollment.model.js";
 import { PaymentStatus } from "../enrollment/enrollment.interface.js";
+import type { JwtPayload } from "jsonwebtoken";
 
 
 const getAllUsers = async () => {
-	const users = await User.find({ isDeleted: false }).select('-password');
-	return users;
+  const users = await User.find({ isDeleted: false }).select('-password');
+  return users;
 }
 
 const getUserById = async (userId: string) => {
-	const user = await User.findById(userId).select('-password');
-	if (!user) {
-		throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
-	}
-	return user;
+  const user = await User.findById(userId).select('-password');
+  if (!user) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
+  }
+  return user;
 }
 
 const updateUser = async (userId: string, payload: Partial<IUser>) => {
-	const updated = await User.findByIdAndUpdate(userId, payload, { new: true }).select('-password');
-	if (!updated) {
-		throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
-	}
-	return updated;
+  const updated = await User.findByIdAndUpdate(userId, payload, { new: true }).select('-password');
+  if (!updated) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
+  }
+  return updated;
+}
+
+
+const updateMyProfile = async (userId: string, payload: Partial<IUser>, decodedToken: JwtPayload) => {
+  // Prevent updating sensitive or admin-managed fields
+
+  const isExist = await User.findById(userId)
+  if (!isExist) {
+    throw new AppError(StatusCodes.NOT_FOUND, "User not found!")
+  }
+
+  if (payload.role) {
+    if (decodedToken.role !== Role.ADMIN) {
+      throw new AppError(StatusCodes.UNAUTHORIZED, "You are not authorized to update role")
+    }
+  }
+
+  if (payload.isBlocked || payload.isDeleted || payload.isApproved || payload.enrolledCourses || payload.enrolledCourses || payload.password) {
+    if (decodedToken.role === Role.INSTRUCTOR || decodedToken.role === Role.STUDENT) {
+      throw new AppError(StatusCodes.UNAUTHORIZED, "You are not authorized!");
+    }
+  }
+
+
+  const result = await User.findByIdAndUpdate(userId, payload, { returnDocument: "after", runValidators: true }).select('-password')
+  return result
+
+  // const forbidden = [
+  //   'role',
+  //   'isBlocked',
+  //   'isDeleted',
+  //   'enrolledCourses',
+  //   'isApproved',
+  //   'publishedCourses',
+  //   'password'
+  // ];
+
+  // const updatePayload: Partial<IUser> = { ...payload } as Partial<IUser>;
+  // forbidden.forEach((key) => {
+  //   if (updatePayload.hasOwnProperty(key)) delete (updatePayload as any)[key];
+  // });
+
+  // const updated = await User.findByIdAndUpdate(userId, updatePayload, { new: true }).select('-password');
+  // if (!updated) {
+  //   throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
+  // }
+  // return updated;
 }
 
 const deleteUser = async (userId: string) => {
-	const deleted = await User.findByIdAndUpdate(userId, { isDeleted: true }, { new: true });
-	if (!deleted) {
-		throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
-	}
-	return deleted;
+  const deleted = await User.findByIdAndUpdate(userId, { isDeleted: true }, { new: true });
+  if (!deleted) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
+  }
+  return deleted;
 }
 
 
@@ -156,9 +204,10 @@ export const getInstructorDetails = async (
 
 
 export const userServices = {
-	getAllUsers,
-	getUserById,
-	updateUser,
-	deleteUser,
-	getInstructorDetails
+  getAllUsers,
+  getUserById,
+  updateUser,
+  deleteUser,
+  getInstructorDetails,
+  updateMyProfile
 }

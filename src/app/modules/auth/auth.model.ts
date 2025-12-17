@@ -17,6 +17,7 @@ const userSchema = new Schema<IUser>({
     institute: { type: String },
     isDeleted: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false },
+    isApproved: { type: Boolean, default: false },
 
     
     enrolledCourses: [

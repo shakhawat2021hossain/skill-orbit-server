@@ -24,5 +24,6 @@ export interface IUser {
 
     // Instructor fields
     publishedCourses?: Types.ObjectId[];
+    isApproved?: boolean;
 
 }

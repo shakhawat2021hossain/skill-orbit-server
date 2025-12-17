@@ -3,6 +3,7 @@ import catchAsync from "../../utils/catchAsync.js";
 import { sendResponse } from "../../utils/sendResponse.js";
 import { StatusCodes } from "http-status-codes";
 import { userServices } from "./user.service.js";
+import type { JwtPayload } from "jsonwebtoken";
 
 const getAllUsers = catchAsync(async (req: Request, res: Response) => {
 	const result = await userServices.getAllUsers();
@@ -34,6 +35,19 @@ const getMyProfile = catchAsync(async (req: Request, res: Response) => {
 		data: result,
 		success: true,
 		message: "Retrieved profile successfully!",
+		statusCode: StatusCodes.OK
+	});
+});
+
+
+const updateMyProfile = catchAsync(async (req: Request, res: Response) => {
+	// const userId = req.user?.userId as string;
+	const result = await userServices.updateMyProfile(req.params?.id as string, req.body, req?.user as JwtPayload);
+
+	sendResponse(res, {
+		data: result,
+		success: true,
+		message: "Updated profile successfully!",
 		statusCode: StatusCodes.OK
 	});
 });
@@ -78,6 +92,7 @@ export const userControllers = {
 	getAllUsers,
 	getUserById,
 	getMyProfile,
+	updateMyProfile,
 	updateUser,
 	deleteUser,
 	getInstructorDetails
