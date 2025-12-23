@@ -18,12 +18,12 @@ const register = catchAsync(async (req: Request, res: Response) => {
 const credentialLogin = catchAsync(async (req: Request, res: Response) => {
     const result = await authServices.credentialLogin(req.body)
 
-    res.cookie("accessToken", result.accessToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        maxAge: 7 * 24 * 60 * 60 * 1000
-    })
+    // res.cookie("accessToken", result.accessToken, {
+    //     httpOnly: true,
+    //     secure: true,
+    //     sameSite: "none",
+    //     maxAge: 7 * 24 * 60 * 60 * 1000
+    // })
 
     sendResponse(res, {
         data: result,
