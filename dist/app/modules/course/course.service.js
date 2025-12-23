@@ -3,6 +3,7 @@ import { Enrollment } from "../enrollment/enrollment.model.js";
 import { PaymentStatus } from "../enrollment/enrollment.interface.js";
 import AppError from "../../utils/appError.js";
 import { StatusCodes } from "http-status-codes";
+import { User } from "../auth/auth.model.js";
 const createCourse = async (payload, instructorId) => {
     const courseData = {
         ...payload,
@@ -12,11 +13,17 @@ const createCourse = async (payload, instructorId) => {
     return course;
 };
 const getAllCourses = async () => {
-    const courses = await Course.find({ isPublished: true }).populate("syllabus");
+    const courses = await Course.find({ isPublished: true, isDeleted: false }).populate("syllabus");
     return courses;
 };
-const getInstructorCourses = async (instructorId) => {
-    const courses = await Course.find({ createdBy: instructorId }).populate("syllabus");
+const getInstructorCourses = async (decodedToken) => {
+    // console.log(decodedToken)
+    const courses = await Course.find({ createdBy: decodedToken.userId }).populate("syllabus");
+    return courses;
+};
+const getAdminCourses = async () => {
+    // console.log(decodedToken)
+    const courses = await Course.find().populate("syllabus");
     return courses;
 };
 const getMyCourses = async (userId) => {
@@ -55,12 +62,29 @@ const updateCourse = async (courseId, instructorId, payload) => {
     const updated = await Course.findByIdAndUpdate(courseId, payload, { new: true }).populate("syllabus");
     return updated;
 };
+const adminToggleDeleteCourse = async (courseId) => {
+    const course = await Course.findById(courseId);
+    if (!course) {
+        throw new AppError(StatusCodes.NOT_FOUND, "Course not found");
+    }
+    console.log("delete1", course.isDeleted);
+    // const newFlag = typeof flag === 'boolean' ? flag : !course.isDeleted;
+    course.isDeleted = !course.isDeleted;
+    await course.save();
+    console.log("delete2", course.isDeleted);
+    const message = course.isDeleted ? 'Course marked as deleted' : 'Course restored';
+    // const message = 'Course marked as deleted';
+    return { message, course };
+};
+// append to exported services
 export const courseServices = {
     getAllCourses,
+    getInstructorCourses,
+    getAdminCourses,
     createCourse,
     getCourseById,
-    getInstructorCourses,
     getMyCourses,
-    updateCourse
+    updateCourse,
+    adminToggleDeleteCourse
 };
 //# sourceMappingURL=course.service.js.map

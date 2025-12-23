@@ -21,7 +21,7 @@ app.use(cookieParser())
 
 app.use(
     cors({
-        origin: ['http://localhost:5173', envVars.FRONTEND_URL],
+        origin: ['http://localhost:5173', envVars.FRONTEND_URL, "https://skill-orbit-client.vercel.app/login"],
         credentials: true
     })
 );

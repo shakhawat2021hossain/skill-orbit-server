@@ -89,20 +89,28 @@ const deleteUser = async (userId: string) => {
 const addToWishlist = async (userId: string, courseId: string) => {
   const course = await Course.findById(courseId);
   if (!course) {
-    throw new AppError(StatusCodes.NOT_FOUND, 'Course not found');
+    throw new AppError(StatusCodes.NOT_FOUND, "Course not found");
   }
+  
+  
 
-  const updated = await User.findByIdAndUpdate(
+  const updatedUser = await User.findByIdAndUpdate(
     userId,
-    { $addToSet: { wishlist: courseId } },
+    {
+      $addToSet: {
+        wishlist: new Types.ObjectId(courseId),
+      },
+    },
     { new: true }
-  ).select('-password');
+  ).select("-password");
+  console.log("up", updatedUser)
 
-  if (!updated) {
-    throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
+  if (!updatedUser) {
+    throw new AppError(StatusCodes.NOT_FOUND, "User not found");
   }
 
-  return updated.wishlist;
+
+  return updatedUser.wishlist;
 }
 
 const removeFromWishlist = async (userId: string, courseId: string) => {

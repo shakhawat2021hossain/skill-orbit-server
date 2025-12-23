@@ -12,7 +12,7 @@ app.post("/webhook", express.raw({ type: "application/json" }), paymentControlle
 app.use(cookieParser());
 // app.set("trust proxy", 1);
 app.use(cors({
-    origin: ['http://localhost:5173', envVars.FRONTEND_URL],
+    origin: ['http://localhost:5173', envVars.FRONTEND_URL, "https://skill-orbit-client.vercel.app/login"],
     credentials: true
 }));
 app.use(express.json());

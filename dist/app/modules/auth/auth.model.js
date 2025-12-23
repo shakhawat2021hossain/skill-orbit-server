@@ -15,6 +15,13 @@ const userSchema = new Schema({
     institute: { type: String },
     isDeleted: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false },
+    isApproved: { type: Boolean, default: false },
+    wishlist: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Course",
+        },
+    ],
     enrolledCourses: [
         {
             type: Schema.Types.ObjectId,

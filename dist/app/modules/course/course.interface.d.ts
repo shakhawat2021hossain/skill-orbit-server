@@ -29,6 +29,7 @@ export interface ICourse {
     totalDuration?: number;
     createdBy: Types.ObjectId;
     students?: Types.ObjectId[];
+    isDeleted?: boolean;
 }
 export interface ILesson {
     title: string;

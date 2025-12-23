@@ -123,7 +123,25 @@ export declare const User: import("mongoose").Model<IUser, {}, {}, {
     }, "id"> & {
         id: string;
     }>;
+    wishlist?: import("mongoose").SchemaDefinitionProperty<import("mongoose").Types.ObjectId[] | undefined, IUser, import("mongoose").Document<unknown, {}, IUser, {
+        id: string;
+    }, import("mongoose").ResolveSchemaOptions<import("mongoose").DefaultSchemaOptions>> & Omit<IUser & {
+        _id: import("mongoose").Types.ObjectId;
+    } & {
+        __v: number;
+    }, "id"> & {
+        id: string;
+    }>;
     publishedCourses?: import("mongoose").SchemaDefinitionProperty<import("mongoose").Types.ObjectId[] | undefined, IUser, import("mongoose").Document<unknown, {}, IUser, {
+        id: string;
+    }, import("mongoose").ResolveSchemaOptions<import("mongoose").DefaultSchemaOptions>> & Omit<IUser & {
+        _id: import("mongoose").Types.ObjectId;
+    } & {
+        __v: number;
+    }, "id"> & {
+        id: string;
+    }>;
+    isApproved?: import("mongoose").SchemaDefinitionProperty<boolean | undefined, IUser, import("mongoose").Document<unknown, {}, IUser, {
         id: string;
     }, import("mongoose").ResolveSchemaOptions<import("mongoose").DefaultSchemaOptions>> & Omit<IUser & {
         _id: import("mongoose").Types.ObjectId;

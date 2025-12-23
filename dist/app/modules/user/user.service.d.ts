@@ -1,5 +1,6 @@
-import type { IUser } from "../auth/auth.interface.js";
+import { type IUser } from "../auth/auth.interface.js";
 import { Types } from "mongoose";
+import type { JwtPayload } from "jsonwebtoken";
 export declare const getInstructorDetails: (instructorId: string) => Promise<{
     courses: {
         total: any;
@@ -67,5 +68,17 @@ export declare const userServices: {
             perCourse: any[];
         };
     }>;
+    updateMyProfile: (userId: string, payload: Partial<IUser>, decodedToken: JwtPayload) => Promise<(import("mongoose").Document<unknown, {}, IUser, {
+        id: string;
+    }, import("mongoose").ResolveSchemaOptions<import("mongoose").DefaultSchemaOptions>> & Omit<IUser & {
+        _id: Types.ObjectId;
+    } & {
+        __v: number;
+    }, "id"> & {
+        id: string;
+    }) | null>;
+    addToWishlist: (userId: string, courseId: string) => Promise<Types.ObjectId[] | undefined>;
+    removeFromWishlist: (userId: string, courseId: string) => Promise<Types.ObjectId[] | undefined>;
+    getWishlist: (userId: string) => Promise<Types.ObjectId[] | undefined>;
 };
 //# sourceMappingURL=user.service.d.ts.map

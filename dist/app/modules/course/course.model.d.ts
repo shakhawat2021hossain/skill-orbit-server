@@ -209,5 +209,14 @@ export declare const Course: import("mongoose").Model<ICourse, {}, {}, {
     }, "id"> & {
         id: string;
     }>;
+    isDeleted?: import("mongoose").SchemaDefinitionProperty<boolean | undefined, ICourse, import("mongoose").Document<unknown, {}, ICourse, {
+        id: string;
+    }, import("mongoose").ResolveSchemaOptions<import("mongoose").DefaultSchemaOptions>> & Omit<ICourse & {
+        _id: Types.ObjectId;
+    } & {
+        __v: number;
+    }, "id"> & {
+        id: string;
+    }>;
 }, ICourse>, ICourse>;
 //# sourceMappingURL=course.model.d.ts.map

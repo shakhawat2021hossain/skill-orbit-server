@@ -16,6 +16,8 @@ export interface IUser {
     isBlocked?: boolean;
     institute?: string;
     enrolledCourses?: Types.ObjectId[];
+    wishlist?: Types.ObjectId[];
     publishedCourses?: Types.ObjectId[];
+    isApproved?: boolean;
 }
 //# sourceMappingURL=auth.interface.d.ts.map

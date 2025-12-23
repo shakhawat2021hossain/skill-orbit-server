@@ -22,11 +22,20 @@ const getAllCourses = catchAsync(async (req, res) => {
     });
 });
 const getInstructorCourses = catchAsync(async (req, res) => {
-    const result = await courseServices.getInstructorCourses(req.user?.userId);
+    const result = await courseServices.getInstructorCourses(req.user);
     sendResponse(res, {
         data: result,
         success: true,
         message: "Retrieved all courses of the instructor!",
+        statusCode: StatusCodes.OK
+    });
+});
+const getAdminCourses = catchAsync(async (req, res) => {
+    const result = await courseServices.getAdminCourses();
+    sendResponse(res, {
+        data: result,
+        success: true,
+        message: "Retrieved all courses for admin!",
         statusCode: StatusCodes.OK
     });
 });
@@ -50,6 +59,16 @@ const getCourseById = catchAsync(async (req, res) => {
         statusCode: StatusCodes.OK
     });
 });
+const adminToggleDeleteCourse = catchAsync(async (req, res) => {
+    const courseId = req.params.courseId;
+    const result = await courseServices.adminToggleDeleteCourse(courseId);
+    sendResponse(res, {
+        data: { isDeleted: result.course.isDeleted },
+        success: true,
+        message: result.message,
+        statusCode: StatusCodes.OK
+    });
+});
 const updateCourse = catchAsync(async (req, res) => {
     const courseId = req.params.courseId;
     const instructorId = req.user?.userId;
@@ -65,8 +84,10 @@ export const courseControllers = {
     createCourse,
     getAllCourses,
     getInstructorCourses,
-    getCourseById,
+    getAdminCourses,
     getMyCourses,
-    updateCourse
+    getCourseById,
+    updateCourse,
+    adminToggleDeleteCourse
 };
 //# sourceMappingURL=course.controller.js.map
