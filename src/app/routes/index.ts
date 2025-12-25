@@ -4,6 +4,7 @@ import { courseRoutes } from "../modules/course/course.route.js";
 import { enrollmentRoutes } from "../modules/enrollment/enrollment.route.js";
 import { userRoutes } from "../modules/user/user.route.js";
 import { lessonsRoutes } from "../modules/lesson/lesson.route.js";
+import { metadataRoutes } from "../modules/metadata/metadata.route.js";
 
 export const router = Router()
 const apiRoutes = [
@@ -27,6 +28,10 @@ const apiRoutes = [
     {
         path: '/lesson',
         routes: lessonsRoutes
+    },
+    {
+        path: '/metadata',
+        routes: metadataRoutes
     },
     
 ]

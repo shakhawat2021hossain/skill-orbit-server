@@ -19,7 +19,8 @@ const enroll = async (courseId: string, userId: string) => {
 
     await Enrollment.create({
         studentId: userId,
-        courseId
+        courseId,
+        amountPaid: course.price
     })
 
     await User.findByIdAndUpdate(
