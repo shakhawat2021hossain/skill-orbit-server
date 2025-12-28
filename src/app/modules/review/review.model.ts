@@ -24,6 +24,11 @@ const reviewSchema = new Schema<IReview>(
             trim: true,
             maxlength: 1000,
         },
+        reviewer: {
+            type: String,
+            trim: true,
+            maxlength: 200,
+        },
         isEdited: {
             type: Boolean,
             default: false,

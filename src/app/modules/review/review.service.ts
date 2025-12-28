@@ -6,6 +6,7 @@ import { Enrollment } from "../enrollment/enrollment.model.js";
 import { PaymentStatus } from "../enrollment/enrollment.interface.js";
 import type { Types } from "mongoose";
 import type { IReview } from "./review.interface.js";
+import { User } from "../auth/auth.model.js";
 
 const postReview = async (payload: IReview, userId: string) => {
 
@@ -15,6 +16,9 @@ const postReview = async (payload: IReview, userId: string) => {
     if (!course) {
         throw new AppError(StatusCodes.NOT_FOUND, "Course not found");
     }
+
+    const user = await User.findById(userId)
+    console.log(user)
 
     // ensure student is enrolled and paid for the course
     const enrollment = await Enrollment.findOne({ studentId: userId, courseId, paymentStatus: PaymentStatus.PAID });
@@ -27,7 +31,7 @@ const postReview = async (payload: IReview, userId: string) => {
 
     if (!existingReview) {
         // create new review
-        const newReview = await Review.create({ studentId: userId, courseId, rating, review });
+        const newReview = await Review.create({ studentId: userId, courseId, rating, review: review || "", reviewer: user?.name as string });
 
         // update course rating
         const oldCount = course.rating?.count ?? 0;
@@ -44,7 +48,7 @@ const postReview = async (payload: IReview, userId: string) => {
         // update existing review
         const oldRating = existingReview.rating;
         existingReview.rating = rating;
-        existingReview.review = review ?? existingReview.review;
+        existingReview.review = review || existingReview.review || "";
         existingReview.isEdited = true;
         await existingReview.save();
 

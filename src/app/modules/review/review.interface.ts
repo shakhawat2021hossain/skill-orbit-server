@@ -5,7 +5,8 @@ export interface IReview {
   courseId: Types.ObjectId;
 
   rating: number;
-  review: string;
+  review?: string;
+  reviewer?: string;
 
   isEdited: boolean;
   createdAt: Date;
