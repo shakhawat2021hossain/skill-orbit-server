@@ -16,7 +16,8 @@ const enroll = async (courseId, userId) => {
     }
     await Enrollment.create({
         studentId: userId,
-        courseId
+        courseId,
+        amountPaid: course.price
     });
     await User.findByIdAndUpdate(userId, { $addToSet: { enrolledCourses: courseId } });
     const session = await stripe.checkout.sessions.create({

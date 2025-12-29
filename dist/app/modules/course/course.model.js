@@ -32,7 +32,11 @@ const CourseSchema = new Schema({
     ],
     isDeleted: { type: Boolean, default: false },
     students: [{ type: Schema.Types.ObjectId, ref: "User" }],
-    createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true }
+    createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    rating: {
+        count: { type: Number, default: 0 },
+        average: { type: Number, default: 0 }
+    }
 }, {
     timestamps: true,
     versionKey: false,

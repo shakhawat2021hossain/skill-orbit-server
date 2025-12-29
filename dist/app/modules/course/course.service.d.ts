@@ -10,6 +10,11 @@ export declare const courseServices: {
     }, "id"> & {
         id: string;
     })[]>;
+    getPublicCourseDetails: (courseId: string) => Promise<(ICourse & {
+        _id: import("mongoose").Types.ObjectId;
+    } & {
+        __v: number;
+    }) | null>;
     getInstructorCourses: (decodedToken: JwtPayload) => Promise<(import("mongoose").Document<unknown, {}, ICourse, {
         id: string;
     }, import("mongoose").ResolveSchemaOptions<import("mongoose").DefaultSchemaOptions>> & Omit<ICourse & {

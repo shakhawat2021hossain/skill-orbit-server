@@ -67,38 +67,6 @@ const getInstructorDetails = catchAsync(async (req, res) => {
         statusCode: StatusCodes.OK
     });
 });
-const addToWishlist = catchAsync(async (req, res) => {
-    const userId = req.user?.userId;
-    const courseId = req.params.courseId;
-    const result = await userServices.addToWishlist(userId, courseId);
-    sendResponse(res, {
-        data: result,
-        success: true,
-        message: "Added to wishlist successfully!",
-        statusCode: StatusCodes.OK
-    });
-});
-const removeFromWishlist = catchAsync(async (req, res) => {
-    const userId = req.user?.userId;
-    const courseId = req.params.courseId;
-    const result = await userServices.removeFromWishlist(userId, courseId);
-    sendResponse(res, {
-        data: result,
-        success: true,
-        message: "Removed from wishlist successfully!",
-        statusCode: StatusCodes.OK
-    });
-});
-const getWishlist = catchAsync(async (req, res) => {
-    const userId = req.user?.userId;
-    const result = await userServices.getWishlist(userId);
-    sendResponse(res, {
-        data: result,
-        success: true,
-        message: "Retrieved wishlist successfully!",
-        statusCode: StatusCodes.OK
-    });
-});
 export const userControllers = {
     getAllUsers,
     getUserById,
@@ -106,9 +74,6 @@ export const userControllers = {
     updateMyProfile,
     updateUser,
     deleteUser,
-    getInstructorDetails,
-    addToWishlist,
-    getWishlist,
-    removeFromWishlist
+    getInstructorDetails
 };
 //# sourceMappingURL=user.controller.js.map

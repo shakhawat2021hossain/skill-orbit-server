@@ -16,18 +16,19 @@ app.post(
 
 
 
+app.use(express.json())
 app.use(
     cors({
-        origin: ['http://localhost:5173', envVars.FRONTEND_URL, "https://skill-orbit-client.vercel.app"],
+        origin: ["https://skill-orbit-client.vercel.app"],
         credentials: true
     })
 );
+// 'http://localhost:5173', envVars.FRONTEND_URL, 
 
 // middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
 app.set("trust proxy", 1);
-app.use(express.json())
 
 app.get('/', async (req: Request, res: Response) => {
     res.json({

@@ -21,6 +21,24 @@ const getAllCourses = catchAsync(async (req, res) => {
         statusCode: StatusCodes.OK
     });
 });
+const getPublicCourseDetails = catchAsync(async (req, res) => {
+    const result = await courseServices.getPublicCourseDetails(req.params?.courseId);
+    sendResponse(res, {
+        data: result,
+        success: true,
+        message: "Retrieved all courses successfully!",
+        statusCode: StatusCodes.OK
+    });
+});
+const getCourseById = catchAsync(async (req, res) => {
+    const result = await courseServices.getCourseById(req.params?.courseId);
+    sendResponse(res, {
+        data: result,
+        success: true,
+        message: "Retrieved course successfully!",
+        statusCode: StatusCodes.OK
+    });
+});
 const getInstructorCourses = catchAsync(async (req, res) => {
     const result = await courseServices.getInstructorCourses(req.user);
     sendResponse(res, {
@@ -50,15 +68,6 @@ const getMyCourses = catchAsync(async (req, res) => {
         statusCode: StatusCodes.OK
     });
 });
-const getCourseById = catchAsync(async (req, res) => {
-    const result = await courseServices.getCourseById(req.params?.courseId);
-    sendResponse(res, {
-        data: result,
-        success: true,
-        message: "Retrieved course successfully!",
-        statusCode: StatusCodes.OK
-    });
-});
 const adminToggleDeleteCourse = catchAsync(async (req, res) => {
     const courseId = req.params.courseId;
     const result = await courseServices.adminToggleDeleteCourse(courseId);
@@ -83,10 +92,11 @@ const updateCourse = catchAsync(async (req, res) => {
 export const courseControllers = {
     createCourse,
     getAllCourses,
+    getCourseById,
+    getPublicCourseDetails,
     getInstructorCourses,
     getAdminCourses,
     getMyCourses,
-    getCourseById,
     updateCourse,
     adminToggleDeleteCourse
 };

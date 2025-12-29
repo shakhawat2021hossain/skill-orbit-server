@@ -30,6 +30,10 @@ export interface ICourse {
     createdBy: Types.ObjectId;
     students?: Types.ObjectId[];
     isDeleted?: boolean;
+    rating: {
+        average: number;
+        count: number;
+    };
 }
 export interface ILesson {
     title: string;

@@ -10,9 +10,6 @@ router.patch('/:id/update', auth(...Object.values(Role)), userControllers.update
 router.get('/details', auth(Role.INSTRUCTOR), userControllers.getInstructorDetails);
 router.get('/:userId', auth(Role.ADMIN), userControllers.getUserById);
 router.patch('/:userId', auth(Role.ADMIN), userControllers.updateUser);
-router.get('/wishlist', auth(Role.STUDENT), userControllers.getWishlist);
-router.post('/wishlist/:courseId', auth(Role.STUDENT), userControllers.addToWishlist);
-router.delete('/wishlist/:courseId', auth(Role.STUDENT), userControllers.removeFromWishlist);
 router.delete('/:userId', auth(Role.ADMIN), userControllers.deleteUser);
 export const userRoutes = router;
 //# sourceMappingURL=user.route.js.map

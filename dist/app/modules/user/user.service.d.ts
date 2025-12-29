@@ -77,8 +77,5 @@ export declare const userServices: {
     }, "id"> & {
         id: string;
     }) | null>;
-    addToWishlist: (userId: string, courseId: string) => Promise<Types.ObjectId[] | undefined>;
-    removeFromWishlist: (userId: string, courseId: string) => Promise<Types.ObjectId[] | undefined>;
-    getWishlist: (userId: string) => Promise<Types.ObjectId[] | undefined>;
 };
 //# sourceMappingURL=user.service.d.ts.map

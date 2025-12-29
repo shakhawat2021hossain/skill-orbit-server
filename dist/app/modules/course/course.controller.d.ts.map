@@ -1,1 +1,1 @@
-{"version":3,"file":"course.controller.d.ts","sourceRoot":"","sources":["../../../../src/app/modules/course/course.controller.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,OAAO,EAAE,QAAQ,EAAE,MAAM,SAAS,CAAA;AA+GhD,eAAO,MAAM,iBAAiB;;;;;;;;;CAS7B,CAAA"}
+{"version":3,"file":"course.controller.d.ts","sourceRoot":"","sources":["../../../../src/app/modules/course/course.controller.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,OAAO,EAAE,QAAQ,EAAE,MAAM,SAAS,CAAA;AA0HhD,eAAO,MAAM,iBAAiB;;;;;;;;;;CAU7B,CAAA"}

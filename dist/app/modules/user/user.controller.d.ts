@@ -7,8 +7,5 @@ export declare const userControllers: {
     updateUser: (req: Request, res: Response, next: import("express").NextFunction) => Promise<void>;
     deleteUser: (req: Request, res: Response, next: import("express").NextFunction) => Promise<void>;
     getInstructorDetails: (req: Request, res: Response, next: import("express").NextFunction) => Promise<void>;
-    addToWishlist: (req: Request, res: Response, next: import("express").NextFunction) => Promise<void>;
-    getWishlist: (req: Request, res: Response, next: import("express").NextFunction) => Promise<void>;
-    removeFromWishlist: (req: Request, res: Response, next: import("express").NextFunction) => Promise<void>;
 };
 //# sourceMappingURL=user.controller.d.ts.map
