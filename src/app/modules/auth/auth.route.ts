@@ -3,10 +3,11 @@ import { authControllers } from "./auth.controller.js";
 import { auth } from "../../middleware/auth.js";
 import { Role } from "./auth.interface.js";
 
-const router =  Router()
+const router = Router()
 
 router.post('/register', authControllers.register)
 router.post('/login', authControllers.credentialLogin)
 router.post('/logout', auth(Role.ADMIN, Role.INSTRUCTOR, Role.STUDENT), authControllers.logout)
+router.post('/forgot-password', authControllers.forgotPassword)
 
 export const authRoutes = router

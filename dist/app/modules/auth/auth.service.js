@@ -35,7 +35,7 @@ const credentialLogin = async (payload) => {
     // delete user.password
     return {
         user,
-        accessToken: tokens.accessToken,
+        token: tokens.accessToken,
         refreshToken: tokens.refreshToken,
     };
 };

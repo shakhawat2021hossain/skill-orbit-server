@@ -15,7 +15,7 @@ export declare const authServices: {
         } & {
             __v: number;
         };
-        accessToken: string;
+        token: string;
         refreshToken: string;
     }>;
 };

@@ -18,12 +18,12 @@ const register = catchAsync(async (req: Request, res: Response) => {
 const credentialLogin = catchAsync(async (req: Request, res: Response) => {
     const result = await authServices.credentialLogin(req.body)
 
-    // res.cookie("accessToken", result.accessToken, {
-    //     httpOnly: true,
-    //     secure: true,
-    //     sameSite: "none",
-    //     maxAge: 7 * 24 * 60 * 60 * 1000
-    // })
+    res.cookie("accessToken", result.accessToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: 7 * 24 * 60 * 60 * 1000
+    })
 
     sendResponse(res, {
         data: result,
@@ -37,11 +37,11 @@ const credentialLogin = catchAsync(async (req: Request, res: Response) => {
 const logout = catchAsync(async (req: Request, res: Response) => {
 
     // Clear the access token cookie
-    // res.clearCookie("accessToken", {
-    //     httpOnly: true,
-    //     secure: true,
-    //     sameSite: "none",
-    // })
+    res.clearCookie("accessToken", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+    })
 
     sendResponse(res, {
         data: null,
@@ -52,10 +52,24 @@ const logout = catchAsync(async (req: Request, res: Response) => {
 })
 
 
+const forgotPassword = catchAsync(async (req: Request, res: Response) => {
+    const { email } = req.body
+    const result = await authServices.forgotPassword(email)
+
+    sendResponse(res, {
+        data: result,
+        success: true,
+        message: "A reset link send to your email successfully!",
+        statusCode: StatusCodes.ACCEPTED
+    })
+})
+
+
 
 export const authControllers = {
     register,
     credentialLogin,
-    logout
+    logout,
+    forgotPassword
 }
 
