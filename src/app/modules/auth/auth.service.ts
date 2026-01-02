@@ -3,8 +3,8 @@ import type { IUser } from "./auth.interface.js"
 import { User } from "./auth.model.js"
 import { StatusCodes } from "http-status-codes"
 import bcrypt from "bcrypt"
-import { generateTokens } from "../../utils/jwt.js"
-import jwt from "jsonwebtoken"
+import { generateTokens, verifyToken } from "../../utils/jwt.js"
+import jwt, { type JwtPayload } from "jsonwebtoken"
 import { envVars } from "../../config/envVars.js"
 import { sendEmail } from "../../utils/sendEmail.js"
 
@@ -109,9 +109,51 @@ const forgotPassword = async (email: string) => {
 
 }
 
+const resetPassword = async (
+    token: string,
+    payload: { id: string; newPassword: string }
+) => {
+
+    const decoded: JwtPayload = await verifyToken(
+        token,
+        envVars.FORGOT_PASS_TOKEN_SECRET
+    );
+    console.log(decoded)
+
+    if (!decoded?.userId) {
+        throw new AppError(StatusCodes.FORBIDDEN, "Invalid or expired token");
+    }
+
+    if (decoded.userId !== payload.id) {
+        throw new AppError(StatusCodes.FORBIDDEN, "Unauthorized access");
+    }
+
+    const user = await User.findById(payload.id);
+    if (!user) {
+        throw new AppError(StatusCodes.BAD_REQUEST, "User does not exist");
+    }
+
+    if (payload.newPassword.length < 6) {
+        throw new AppError(
+            StatusCodes.BAD_REQUEST,
+            "Password must be at least 6 characters long"
+        );
+    }
+
+    const hashedPassword = await bcrypt.hash(payload.newPassword, 10);
+
+    // 6. update password
+    user.password = hashedPassword;
+    await user.save();
+};
+
+
+
+
 
 export const authServices = {
     register,
     credentialLogin,
-    forgotPassword
+    forgotPassword,
+    resetPassword
 }
