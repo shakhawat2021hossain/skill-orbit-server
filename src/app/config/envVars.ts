@@ -17,13 +17,11 @@ export const envVars = {
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET as string,
     FRONTEND_URL: process.env.FRONTEND_URL as string,
     EMAIL_SENDER: {
-        SMTP_USER: process.env.SMTP_USER as string,
-        SMTP_PASS: process.env.SMTP_PASS as string,
         SMTP_PORT: process.env.SMTP_PORT as string,
         SMTP_HOST: process.env.SMTP_HOST as string,
+        SMTP_USER: process.env.SMTP_USER as string,
+        SMTP_PASS: process.env.SMTP_PASS as string,
         SMTP_FROM: process.env.SMTP_FROM as string,
     },
-
-
 
 }

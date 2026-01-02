@@ -58,14 +58,14 @@ const credentialLogin = async (payload: Partial<IUser>) => {
 
 
 const forgotPassword = async (email: string) => {
-    const user = await User.findOne({email})
+    const user = await User.findOne({ email })
     if (!user) {
         throw new AppError(StatusCodes.BAD_REQUEST, "User does not exist")
     }
     if (user.isBlocked) {
         throw new AppError(StatusCodes.BAD_REQUEST, "User is Blocked")
     }
-   
+
     if (user.isDeleted) {
         throw new AppError(StatusCodes.BAD_REQUEST, "User is deleted")
     }
@@ -85,11 +85,20 @@ const forgotPassword = async (email: string) => {
     sendEmail({
         to: user.email,
         subject: "Password Reset",
-        templateName: "forgetPassword",
-        templateData: {
-            name: user.name,
-            resetURL
-        }
+        html:
+            `
+                <div>
+                    <p>Dear User,</p>
+                    <p>Your password reset link 
+                        <a href=${resetURL}>
+                            <button>
+                                Reset Password
+                            </button>
+                        </a>
+                    </p>
+
+                </div>
+            `
     })
 
     return resetURL

@@ -1,51 +1,39 @@
-import path from "path"
 import nodemailer from "nodemailer";
 import { envVars } from "../config/envVars.js";
-import ejs from "ejs";
 import AppError from "./appError.js";
 
 const transporter = nodemailer.createTransport({
-    secure: true,
+    secure: false,
     auth: {
-        user: envVars.EMAIL_SENDER.SMTP_USER,
+        user: envVars.EMAIL_SENDER?.SMTP_USER,
         pass: envVars.EMAIL_SENDER.SMTP_PASS
     },
     port: Number(envVars.EMAIL_SENDER.SMTP_PORT),
-    host: envVars.EMAIL_SENDER.SMTP_HOST
+    host: envVars.EMAIL_SENDER.SMTP_HOST,
+    tls: {
+        rejectUnauthorized: false
+    }
 })
 
 interface SendEmailOptions {
     to: string,
     subject: string;
-    templateName: string;
-    templateData?: Record<string, any>
-    attachments?: {
-        filename: string,
-        content: Buffer | string,
-        contentType: string
-    }[]
+    html: string;
 }
 
 export const sendEmail = async ({
     to,
     subject,
-    templateName,
-    templateData,
-    attachments
+    html
 }: SendEmailOptions) => {
     try {
-        const templatePath = path.join(__dirname, `templates/${templateName}.ejs`)
-        const html = await ejs.renderFile(templatePath, templateData)
+        console.log(envVars.EMAIL_SENDER)
         const info = await transporter.sendMail({
-            from: envVars.EMAIL_SENDER.SMTP_FROM,
+            from: envVars.EMAIL_SENDER.SMTP_FROM || envVars.EMAIL_SENDER.SMTP_USER,
+            // from: '"Skill Orbit" <codewithshakhawat@gmail.com>',
             to: to,
             subject: subject,
             html: html,
-            attachments: attachments?.map(attachment => ({
-                filename: attachment.filename,
-                content: attachment.content,
-                contentType: attachment.contentType
-            }))
         })
         console.log(`\u2709\uFE0F Email sent to ${to}: ${info.messageId}`);
     } catch (error: any) {
