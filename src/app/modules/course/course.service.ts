@@ -6,6 +6,7 @@ import AppError from "../../utils/appError.js";
 import { StatusCodes } from "http-status-codes";
 import { User } from "../auth/auth.model.js";
 import type { JwtPayload } from "jsonwebtoken";
+import type { IOtherParams, IPaginateOp } from "../../utils/pagination.js";
 
 const createCourse = async (payload: ICourse, instructorId: string) => {
     const courseData = {
@@ -17,11 +18,36 @@ const createCourse = async (payload: ICourse, instructorId: string) => {
 
 }
 
-const getAllCourses = async () => {
-    
-    const courses = await Course.find({ isPublished: true, isDeleted: false }).populate("syllabus").select('-resources')
+const getAllCourses = async ({ page, limit, sortBy, sortOrder }: IPaginateOp, otherParams: IOtherParams) => {
 
-    return courses
+    const skip = (page - 1) * limit;
+    const { category, searchTerm } = otherParams;
+
+    const filter: Record<string, any> = { isPublished: true, isDeleted: false };
+
+    if (category) filter.category = category;
+
+    if (searchTerm && String(searchTerm).trim()) {
+        const regex = { $regex: String(searchTerm).trim(), $options: "i" };
+        filter.$or = [{ title: regex }, { description: regex }, { tags: regex }];
+    }
+
+    const total = await Course.countDocuments(filter);
+
+    const sort: Record<string, 1 | -1> = {
+        [sortBy]: sortOrder as 1 | -1
+    }
+
+    const courses = await Course.find(filter)
+        .populate("syllabus")
+        .select('-resources')
+        .sort(sort)
+        .skip(skip)
+        .limit(limit);
+
+    const meta = { page, limit, total };
+
+    return { courses, meta };
 
 }
 
@@ -31,18 +57,18 @@ const getCourseById = async (courseId: string) => {
     return course
 
 }
-const getPublicCourseDetails= async (courseId: string) => {
-  const course = await Course.findById(courseId)
-    .select(
-      "title description thumbnail price category totalDuration isPublished rating instructor introVideo tags isDeleted syllabus"
-    )
-    .populate({
-      path: "syllabus",
-      select: "title duration",
-    })
-    .lean();
+const getPublicCourseDetails = async (courseId: string) => {
+    const course = await Course.findById(courseId)
+        .select(
+            "title description thumbnail price category totalDuration isPublished rating instructor introVideo tags isDeleted syllabus"
+        )
+        .populate({
+            path: "syllabus",
+            select: "title duration",
+        })
+        .lean();
 
-  return course;
+    return course;
 };
 
 
@@ -115,13 +141,13 @@ const adminToggleDeleteCourse = async (courseId: string) => {
         throw new AppError(StatusCodes.NOT_FOUND, "Course not found");
     }
 
-    console.log("delete1",course.isDeleted)
+    console.log("delete1", course.isDeleted)
     // const newFlag = typeof flag === 'boolean' ? flag : !course.isDeleted;
 
     course.isDeleted = !course.isDeleted;
     await course.save();
 
-    console.log("delete2",course.isDeleted)
+    console.log("delete2", course.isDeleted)
 
     const message = course.isDeleted ? 'Course marked as deleted' : 'Course restored';
     // const message = 'Course marked as deleted';

@@ -4,6 +4,8 @@ import { sendResponse } from "../../utils/sendResponse.js"
 import { StatusCodes } from "http-status-codes"
 import { courseServices } from "./course.service.js"
 import type { JwtPayload } from "jsonwebtoken"
+import { paginate, type IOtherParams } from "../../utils/pagination.js"
+import { Category } from "./course.interface.js"
 
 const createCourse = catchAsync(async (req: Request, res: Response) => {
     // console.log(req.user)
@@ -21,10 +23,31 @@ const createCourse = catchAsync(async (req: Request, res: Response) => {
 
 
 const getAllCourses = catchAsync(async (req: Request, res: Response) => {
-    const result = await courseServices.getAllCourses()
+    const {
+        // page = 1,
+        // limit = 10,
+        // sortBy = "createdAt",
+        // sortOrder = "asc",
+        search = "",
+        category
+    } = req.query;
+
+
+    const queryParams = paginate(req.query)
+
+    const otherParams: IOtherParams = {
+        searchTerm: String(search)
+    };
+
+    if (Object.values(Category).includes(category as Category)) {
+        otherParams.category = category as Category;
+    }
+
+    const { courses, meta } = await courseServices.getAllCourses(queryParams, otherParams)
 
     sendResponse(res, {
-        data: result,
+        data: courses,
+        meta,
         success: true,
         message: "Retrieved all courses successfully!",
         statusCode: StatusCodes.OK

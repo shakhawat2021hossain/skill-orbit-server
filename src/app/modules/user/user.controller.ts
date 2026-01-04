@@ -4,12 +4,36 @@ import { sendResponse } from "../../utils/sendResponse.js";
 import { StatusCodes } from "http-status-codes";
 import { userServices } from "./user.service.js";
 import type { JwtPayload } from "jsonwebtoken";
+import { paginate, type IOtherParams } from "../../utils/pagination.js";
+import type { Role } from "../auth/auth.interface.js";
+import { Role as RoleEnum } from "../auth/auth.interface.js";
 
 const getAllUsers = catchAsync(async (req: Request, res: Response) => {
-	const result = await userServices.getAllUsers();
+	const {
+		// page = 1,
+		// limit = 10,
+		// sortBy = "createdAt",
+		// sortOrder = "asc",
+		search = "",
+		role
+	} = req.query;
+
+
+	const queryParams = paginate(req.query)
+
+	const otherParams: IOtherParams = {
+		searchTerm: String(search)
+	};
+
+	if (Object.values(RoleEnum).includes(role as Role)) {
+		otherParams.role = role as Role;
+	}
+
+	const { users, meta } = await userServices.getAllUsers(queryParams, otherParams);
 
 	sendResponse(res, {
-		data: result,
+		data: users,
+		meta,
 		success: true,
 		message: "Retrieved all users successfully!",
 		statusCode: StatusCodes.OK

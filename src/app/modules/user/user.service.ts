@@ -7,11 +7,43 @@ import { Course } from "../course/course.model.js";
 import { Enrollment } from "../enrollment/enrollment.model.js";
 import { PaymentStatus } from "../enrollment/enrollment.interface.js";
 import type { JwtPayload } from "jsonwebtoken";
+import type { IOtherParams, IPaginateOp } from "../../utils/pagination.js";
 
 
-const getAllUsers = async () => {
-  const users = await User.find().select('-password');
-  return users;
+
+const getAllUsers = async ({ page, limit, sortBy, sortOrder }: IPaginateOp, otherParams: IOtherParams) => {
+  const skip = (page - 1) * limit;
+  const { role, searchTerm } = otherParams;
+
+  const filter: Record<string, any> = {};
+
+  if (role) filter.role = role;
+
+  if (searchTerm && String(searchTerm).trim()) {
+    const regex = { $regex: String(searchTerm).trim(), $options: "i" };
+    filter.$or = [{ name: regex }, { email: regex }];
+  }
+
+  const total = await User.countDocuments(filter);
+
+  // build sort
+  const sort: Record<string, 1 | -1> = {
+    [sortBy]: sortOrder as 1 | -1
+  }
+
+  const users = await User.find(filter)
+    .select("-password")
+    .sort(sort)
+    .skip(skip)
+    .limit(limit);
+
+  const meta = {
+    page,
+    limit,
+    total,
+  };
+
+  return { users, meta };
 }
 
 const getUserById = async (userId: string) => {
