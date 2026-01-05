@@ -2,10 +2,26 @@ import catchAsync from "../../utils/catchAsync.js";
 import { sendResponse } from "../../utils/sendResponse.js";
 import { StatusCodes } from "http-status-codes";
 import { userServices } from "./user.service.js";
+import { paginate } from "../../utils/pagination.js";
+import { Role as RoleEnum } from "../auth/auth.interface.js";
 const getAllUsers = catchAsync(async (req, res) => {
-    const result = await userServices.getAllUsers();
+    const { 
+    // page = 1,
+    // limit = 10,
+    // sortBy = "createdAt",
+    // sortOrder = "asc",
+    search = "", role } = req.query;
+    const queryParams = paginate(req.query);
+    const otherParams = {
+        searchTerm: String(search)
+    };
+    if (Object.values(RoleEnum).includes(role)) {
+        otherParams.role = role;
+    }
+    const { users, meta } = await userServices.getAllUsers(queryParams, otherParams);
     sendResponse(res, {
-        data: result,
+        data: users,
+        meta,
         success: true,
         message: "Retrieved all users successfully!",
         statusCode: StatusCodes.OK

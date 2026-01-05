@@ -43,7 +43,7 @@ const getInstructorMetaData = async (instructorId) => {
         courseId: { $in: courseIds },
         paymentStatus: PaymentStatus.PAID,
     });
-    console.log("paidenr", paidEnrollments);
+    // console.log("paidenr", paidEnrollments)
     const totalIncome = paidEnrollments.reduce((sum, enroll) => sum + (enroll.amountPaid || 0), 0);
     return {
         courses: {

@@ -14,12 +14,12 @@ const register = catchAsync(async (req, res) => {
 });
 const credentialLogin = catchAsync(async (req, res) => {
     const result = await authServices.credentialLogin(req.body);
-    // res.cookie("accessToken", result.accessToken, {
-    //     httpOnly: true,
-    //     secure: true,
-    //     sameSite: "none",
-    //     maxAge: 7 * 24 * 60 * 60 * 1000
-    // })
+    res.cookie("accessToken", result.accessToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: 7 * 24 * 60 * 60 * 1000
+    });
     sendResponse(res, {
         data: result,
         success: true,
@@ -29,11 +29,11 @@ const credentialLogin = catchAsync(async (req, res) => {
 });
 const logout = catchAsync(async (req, res) => {
     // Clear the access token cookie
-    // res.clearCookie("accessToken", {
-    //     httpOnly: true,
-    //     secure: true,
-    //     sameSite: "none",
-    // })
+    res.clearCookie("accessToken", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+    });
     sendResponse(res, {
         data: null,
         success: true,
@@ -41,9 +41,31 @@ const logout = catchAsync(async (req, res) => {
         statusCode: StatusCodes.OK
     });
 });
+const forgotPassword = catchAsync(async (req, res) => {
+    const { email } = req.body;
+    const result = await authServices.forgotPassword(email);
+    sendResponse(res, {
+        data: result,
+        success: true,
+        message: "A reset link send to your email successfully!",
+        statusCode: StatusCodes.ACCEPTED
+    });
+});
+const resetPassword = catchAsync(async (req, res) => {
+    const token = req.headers.authorization || "";
+    await authServices.resetPassword(token, req.body);
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: "Password Reset successfully!",
+        data: null,
+    });
+});
 export const authControllers = {
     register,
     credentialLogin,
-    logout
+    logout,
+    forgotPassword,
+    resetPassword
 };
 //# sourceMappingURL=auth.controller.js.map

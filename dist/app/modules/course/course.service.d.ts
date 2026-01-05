@@ -1,15 +1,23 @@
 import type { ICourse } from "./course.interface.js";
 import type { JwtPayload } from "jsonwebtoken";
+import type { IOtherParams, IPaginateOp } from "../../utils/pagination.js";
 export declare const courseServices: {
-    getAllCourses: () => Promise<(import("mongoose").Document<unknown, {}, ICourse, {
-        id: string;
-    }, import("mongoose").ResolveSchemaOptions<import("mongoose").DefaultSchemaOptions>> & Omit<ICourse & {
-        _id: import("mongoose").Types.ObjectId;
-    } & {
-        __v: number;
-    }, "id"> & {
-        id: string;
-    })[]>;
+    getAllCourses: ({ page, limit, sortBy, sortOrder }: IPaginateOp, otherParams: IOtherParams) => Promise<{
+        courses: (import("mongoose").Document<unknown, {}, ICourse, {
+            id: string;
+        }, import("mongoose").ResolveSchemaOptions<import("mongoose").DefaultSchemaOptions>> & Omit<ICourse & {
+            _id: import("mongoose").Types.ObjectId;
+        } & {
+            __v: number;
+        }, "id"> & {
+            id: string;
+        })[];
+        meta: {
+            page: number;
+            limit: number;
+            total: number;
+        };
+    }>;
     getPublicCourseDetails: (courseId: string) => Promise<(ICourse & {
         _id: import("mongoose").Types.ObjectId;
     } & {

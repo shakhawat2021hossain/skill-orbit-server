@@ -5,6 +5,8 @@ import { Course } from "../course/course.model.js"
 import { Enrollment } from "./enrollment.model.js"
 import { StatusCodes } from "http-status-codes"
 import { stripe } from "../../utils/stripe.js"
+import { envVars } from "../../config/envVars.js"
+import type { IPaginateOp } from "../../utils/pagination.js"
 
 const enroll = async (courseId: string, userId: string) => {
     const student = await User.findById(userId);
@@ -49,8 +51,8 @@ const enroll = async (courseId: string, userId: string) => {
             courseId,
             studentId: userId,
         },
-        success_url: `http://localhost:3000/dashboard/my-course`,
-        cancel_url: `https://next.programming-hero.com/`,
+        success_url: `${envVars.FRONTEND_LIVE_URL}/dashboard/my-course`,
+        cancel_url: `${envVars.FRONTEND_LIVE_URL}`,
     });
 
     return { session };
@@ -110,8 +112,76 @@ const getEnrolledCourse = async (courseId: string, userId: string) => {
     return { enrollment, course };
 }
 
+
+const getEnrollmentsOfInstructor = async (
+    instructorId: string,
+    { page, limit, skip, sortBy, sortOrder }: IPaginateOp
+) => {
+    const instructorObjectId = new mongoose.Types.ObjectId(instructorId);
+
+    const pipeline: any[] = [
+        {
+            $lookup: {
+                from: "courses",
+                localField: "courseId",
+                foreignField: "_id",
+                as: "course",
+            },
+        },
+        { $unwind: "$course" },
+
+        {
+            $match: {
+                "course.createdBy": instructorObjectId,
+            },
+        },
+
+        {
+            $lookup: {
+                from: "users",
+                localField: "studentId",
+                foreignField: "_id",
+                as: "student",
+            },
+        },
+        { $unwind: "$student" },
+
+        { $sort: { [sortBy]: sortOrder } },
+
+        {
+            $facet: {
+                metadata: [{ $count: "total" }],
+                data: [
+                    { $skip: skip },
+                    { $limit: limit },
+                    {
+                        $project: {
+                            studentId: 1,
+                            courseId: 1,
+                            paymentStatus: 1,
+                            amountPaid: 1,
+                            progress: 1,
+                            _id: 0,
+                        },
+                    },
+                ],
+            },
+        },
+    ];
+
+    const agg = await Enrollment.aggregate(pipeline);
+
+    const total = agg[0]?.metadata[0]?.total || 0;
+    const enrollments = agg[0]?.data || [];
+
+    const meta = { page, limit, total };
+
+    return { enrollments, meta };
+};
+
 export const enrollmentServices = {
     enroll,
     updateProgress,
-    getEnrolledCourse
+    getEnrolledCourse,
+    getEnrollmentsOfInstructor
 }

@@ -2,7 +2,10 @@ import AppError from "../../utils/appError.js";
 import { User } from "./auth.model.js";
 import { StatusCodes } from "http-status-codes";
 import bcrypt from "bcrypt";
-import { generateTokens } from "../../utils/jwt.js";
+import { generateTokens, verifyToken } from "../../utils/jwt.js";
+import jwt, {} from "jsonwebtoken";
+import { envVars } from "../../config/envVars.js";
+import { sendEmail } from "../../utils/sendEmail.js";
 const register = async (payload) => {
     console.log(payload);
     const { email, password, name, ...rest } = payload;
@@ -35,12 +38,75 @@ const credentialLogin = async (payload) => {
     // delete user.password
     return {
         user,
-        token: tokens.accessToken,
+        accessToken: tokens.accessToken,
         refreshToken: tokens.refreshToken,
     };
 };
+const forgotPassword = async (email) => {
+    const user = await User.findOne({ email });
+    if (!user) {
+        throw new AppError(StatusCodes.BAD_REQUEST, "User does not exist");
+    }
+    if (user.isBlocked) {
+        throw new AppError(StatusCodes.BAD_REQUEST, "User is Blocked");
+    }
+    if (user.isDeleted) {
+        throw new AppError(StatusCodes.BAD_REQUEST, "User is deleted");
+    }
+    const jwtPayload = {
+        userId: user._id,
+        email: user.email,
+        role: user.role
+    };
+    const resetToken = jwt.sign(jwtPayload, envVars.FORGOT_PASS_TOKEN_SECRET, {
+        expiresIn: "10m"
+    });
+    const resetURL = `${envVars.FRONTEND_LIVE_URL}/reset-password?id=${user._id}&token=${resetToken}`;
+    console.log("reset", resetURL);
+    sendEmail({
+        to: user.email,
+        subject: "Password Reset",
+        html: `
+                <div>
+                    <p>Dear User,</p>
+                    <p>Your password reset link 
+                        <a href=${resetURL}>
+                            <button>
+                                Reset Password
+                            </button>
+                        </a>
+                    </p>
+
+                </div>
+            `
+    });
+    return resetURL;
+};
+const resetPassword = async (token, payload) => {
+    const decoded = await verifyToken(token, envVars.FORGOT_PASS_TOKEN_SECRET);
+    console.log(decoded);
+    if (!decoded?.userId) {
+        throw new AppError(StatusCodes.FORBIDDEN, "Invalid or expired token");
+    }
+    if (decoded.userId !== payload.id) {
+        throw new AppError(StatusCodes.FORBIDDEN, "Unauthorized access");
+    }
+    const user = await User.findById(payload.id);
+    if (!user) {
+        throw new AppError(StatusCodes.BAD_REQUEST, "User does not exist");
+    }
+    if (payload.newPassword.length < 6) {
+        throw new AppError(StatusCodes.BAD_REQUEST, "Password must be at least 6 characters long");
+    }
+    const hashedPassword = await bcrypt.hash(payload.newPassword, 10);
+    // 6. update password
+    user.password = hashedPassword;
+    await user.save();
+};
 export const authServices = {
     register,
-    credentialLogin
+    credentialLogin,
+    forgotPassword,
+    resetPassword
 };
 //# sourceMappingURL=auth.service.js.map

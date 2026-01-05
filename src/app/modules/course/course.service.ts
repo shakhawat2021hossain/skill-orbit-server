@@ -1,10 +1,9 @@
-import type { ICourse, ILesson } from "./course.interface.js"
-import { Course, Lesson } from "./course.model.js"
+import type { ICourse } from "./course.interface.js"
+import { Course } from "./course.model.js"
 import { Enrollment } from "../enrollment/enrollment.model.js"
 import { PaymentStatus } from "../enrollment/enrollment.interface.js"
 import AppError from "../../utils/appError.js";
 import { StatusCodes } from "http-status-codes";
-import { User } from "../auth/auth.model.js";
 import type { JwtPayload } from "jsonwebtoken";
 import type { IOtherParams, IPaginateOp } from "../../utils/pagination.js";
 

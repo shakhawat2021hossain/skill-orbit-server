@@ -15,8 +15,13 @@ export declare const authServices: {
         } & {
             __v: number;
         };
-        token: string;
+        accessToken: string;
         refreshToken: string;
     }>;
+    forgotPassword: (email: string) => Promise<string>;
+    resetPassword: (token: string, payload: {
+        id: string;
+        newPassword: string;
+    }) => Promise<void>;
 };
 //# sourceMappingURL=auth.service.d.ts.map

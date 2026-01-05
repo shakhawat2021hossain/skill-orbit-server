@@ -1,9 +1,8 @@
-import { Course, Lesson } from "./course.model.js";
+import { Course } from "./course.model.js";
 import { Enrollment } from "../enrollment/enrollment.model.js";
 import { PaymentStatus } from "../enrollment/enrollment.interface.js";
 import AppError from "../../utils/appError.js";
 import { StatusCodes } from "http-status-codes";
-import { User } from "../auth/auth.model.js";
 const createCourse = async (payload, instructorId) => {
     const courseData = {
         ...payload,
@@ -12,9 +11,28 @@ const createCourse = async (payload, instructorId) => {
     const course = await Course.create(courseData);
     return course;
 };
-const getAllCourses = async () => {
-    const courses = await Course.find({ isPublished: true, isDeleted: false }).populate("syllabus").select('-resources');
-    return courses;
+const getAllCourses = async ({ page, limit, sortBy, sortOrder }, otherParams) => {
+    const skip = (page - 1) * limit;
+    const { category, searchTerm } = otherParams;
+    const filter = { isPublished: true, isDeleted: false };
+    if (category)
+        filter.category = category;
+    if (searchTerm && String(searchTerm).trim()) {
+        const regex = { $regex: String(searchTerm).trim(), $options: "i" };
+        filter.$or = [{ title: regex }, { description: regex }, { tags: regex }];
+    }
+    const total = await Course.countDocuments(filter);
+    const sort = {
+        [sortBy]: sortOrder
+    };
+    const courses = await Course.find(filter)
+        .populate("syllabus")
+        .select('-resources')
+        .sort(sort)
+        .skip(skip)
+        .limit(limit);
+    const meta = { page, limit, total };
+    return { courses, meta };
 };
 const getCourseById = async (courseId) => {
     const course = await Course.find({ _id: courseId }).populate("syllabus");

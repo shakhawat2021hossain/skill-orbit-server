@@ -5,6 +5,8 @@ import { Role } from "./auth.interface.js";
 const router = Router();
 router.post('/register', authControllers.register);
 router.post('/login', authControllers.credentialLogin);
-router.post('/logout', auth(Role.ADMIN, Role.INSTRUCTOR, Role.STUDENT), authControllers.logout);
+router.post('/logout', auth(...Object.values(Role)), authControllers.logout);
+router.post('/forgot-password', authControllers.forgotPassword);
+router.post('/reset-password', authControllers.resetPassword);
 export const authRoutes = router;
 //# sourceMappingURL=auth.route.js.map

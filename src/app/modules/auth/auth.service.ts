@@ -80,7 +80,8 @@ const forgotPassword = async (email: string) => {
         expiresIn: "10m"
     })
 
-    const resetURL = `${envVars.FRONTEND_URL}/reset-password?id=${user._id}&token=${resetToken}`
+    const resetURL = `${envVars.FRONTEND_LIVE_URL}/reset-password?id=${user._id}&token=${resetToken}`
+    console.log("reset", resetURL)
 
     sendEmail({
         to: user.email,
@@ -102,10 +103,6 @@ const forgotPassword = async (email: string) => {
     })
 
     return resetURL
-
-    /**
-     * http://localhost:5173/reset-password?id=687f310c724151eb2fcf0c41&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODdmMzEwYzcyNDE1MWViMmZjZjBjNDEiLCJlbWFpbCI6InNhbWluaXNyYXI2QGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzUzMTY2MTM3LCJleHAiOjE3NTMxNjY3Mzd9.LQgXBmyBpEPpAQyPjDNPL4m2xLF4XomfUPfoxeG0MKg
-     */
 
 }
 

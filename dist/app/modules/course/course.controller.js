@@ -2,6 +2,8 @@ import catchAsync from "../../utils/catchAsync.js";
 import { sendResponse } from "../../utils/sendResponse.js";
 import { StatusCodes } from "http-status-codes";
 import { courseServices } from "./course.service.js";
+import { paginate } from "../../utils/pagination.js";
+import { Category } from "./course.interface.js";
 const createCourse = catchAsync(async (req, res) => {
     // console.log(req.user)
     const result = await courseServices.createCourse(req.body, req.user?.userId);
@@ -13,9 +15,23 @@ const createCourse = catchAsync(async (req, res) => {
     });
 });
 const getAllCourses = catchAsync(async (req, res) => {
-    const result = await courseServices.getAllCourses();
+    const { 
+    // page = 1,
+    // limit = 10,
+    // sortBy = "createdAt",
+    // sortOrder = "asc",
+    search = "", category } = req.query;
+    const queryParams = paginate(req.query);
+    const otherParams = {
+        searchTerm: String(search)
+    };
+    if (Object.values(Category).includes(category)) {
+        otherParams.category = category;
+    }
+    const { courses, meta } = await courseServices.getAllCourses(queryParams, otherParams);
     sendResponse(res, {
-        data: result,
+        data: courses,
+        meta,
         success: true,
         message: "Retrieved all courses successfully!",
         statusCode: StatusCodes.OK

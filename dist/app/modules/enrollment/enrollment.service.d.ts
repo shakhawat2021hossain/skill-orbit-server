@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import type { IPaginateOp } from "../../utils/pagination.js";
 export declare const enrollmentServices: {
     enroll: (courseId: string, userId: string) => Promise<{
         session: import("stripe").Stripe.Response<import("stripe").Stripe.Checkout.Session>;
@@ -30,6 +31,14 @@ export declare const enrollmentServices: {
             __v: number;
         }, "id"> & {
             id: string;
+        };
+    }>;
+    getEnrollmentsOfInstructor: (instructorId: string, { page, limit, skip, sortBy, sortOrder }: IPaginateOp) => Promise<{
+        enrollments: any;
+        meta: {
+            page: number;
+            limit: number;
+            total: any;
         };
     }>;
 };

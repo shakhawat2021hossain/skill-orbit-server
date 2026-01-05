@@ -26,7 +26,7 @@ const CourseSchema = new Schema<ICourse>({
     price: { type: Number, required: true },
     category: { type: String, enum: Object.values(Category), required: true },
     introVideo: { type: String },
-    isPublished: { type: Boolean, required: true },
+    isPublished: { type: Boolean, default: true },
     instructor: { type: String, required: true },
     thumbnail: { type: String },
     tags: { type: [String], default: [] },

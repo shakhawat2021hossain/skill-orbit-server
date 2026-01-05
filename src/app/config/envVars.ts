@@ -16,6 +16,7 @@ export const envVars = {
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY as string,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET as string,
     FRONTEND_URL: process.env.FRONTEND_URL as string,
+    FRONTEND_LIVE_URL: process.env.FRONTEND_LIVE_URL as string,
     EMAIL_SENDER: {
         SMTP_PORT: process.env.SMTP_PORT as string,
         SMTP_HOST: process.env.SMTP_HOST as string,

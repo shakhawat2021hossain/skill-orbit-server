@@ -3,6 +3,7 @@ import catchAsync from "../../utils/catchAsync.js"
 import { sendResponse } from "../../utils/sendResponse.js"
 import { StatusCodes } from "http-status-codes"
 import { enrollmentServices } from "./enrollment.service.js"
+import { paginate } from "../../utils/pagination.js"
 
 
 
@@ -46,9 +47,24 @@ const getEnrolledCourse = catchAsync(async (req: Request, res: Response) => {
     })
 })
 
+const getInstructorEnrollments = catchAsync(async (req: Request, res: Response) => {
+    const queryParams = paginate(req.query)
+
+
+    const { enrollments, meta } = await enrollmentServices.getEnrollmentsOfInstructor(req.user?.userId as string, queryParams)
+
+    sendResponse(res, {
+        data: enrollments,
+        meta,
+        success: true,
+        message: "Retrieved instructor enrollments successfully!",
+        statusCode: StatusCodes.OK
+    })
+})
 
 export const enrollmentControllers = {
     enroll,
     updateProgress,
-    getEnrolledCourse
+    getEnrolledCourse,
+    getInstructorEnrollments
 }
