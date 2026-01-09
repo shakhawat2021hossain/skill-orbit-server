@@ -84,35 +84,6 @@ src/
 ```
 
 
-
-## 🧠 Core Concepts
-
-- **Roles**: 
-  - `RIDER` — requests rides.
-  - `DRIVER` — applies, gets approved, accepts rides, toggles availability.
-  - `ADMIN` — manages users/drivers/rides.
-
-- **Ride Status Flow**:
-   requested → accepted → picked_up → in_transit → completed
-
-- **Driver Application**:
-- Rider applies → becomes `driver` role with a pending application.
-- Admin approves → driver can go online and accept rides.
-  
-
-
-## 🛠️ Tech Stack
-
-- Node.js / Express.js
-- MongoDB with Mongoose
-- JWT for authentication
-- Zod for request validation
-- bcrypt for password hashing
-- TypeScript
-- HTTP status codes via `http-status-codes`
-  
-
-
 ## API Endpoints
 
 ### 🔐 Auth Routes (`/auth`)
