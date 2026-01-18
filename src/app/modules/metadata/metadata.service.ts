@@ -52,8 +52,9 @@ const getInstructorMetaData = async (instructorId: string) => {
     const courses = await Course.find({
         createdBy: instructorId,
         isDeleted: { $ne: true },
-    }).select("_id isPublished");
+    })
 
+    console.log("ins cou", courses)
     const courseIds = courses.map(course => course._id);
 
     const paidEnrollments = await Enrollment.find({
@@ -67,6 +68,23 @@ const getInstructorMetaData = async (instructorId: string) => {
         0
     );
 
+    let totalRatingScore = 0;
+    let totalRatingCount = 0;
+
+    courses.forEach(course => {
+        const count = course.rating?.count || 0;
+        const avg = course.rating?.average || 0;
+
+        totalRatingScore += avg * count;
+        totalRatingCount += count;
+    });
+
+    const totalAverageRating =
+        totalRatingCount === 0
+            ? 0
+            : Number((totalRatingScore / totalRatingCount).toFixed(1));
+
+
     return {
         courses: {
             total: courses.length,
@@ -77,8 +95,15 @@ const getInstructorMetaData = async (instructorId: string) => {
         income: {
             total: totalIncome,
         },
+        rating: {
+            average: totalAverageRating,
+            totalReviews: totalRatingCount,
+        },
+
     };
 };
+
+
 const getStudentMetaData = async (studentId: string) => {
     const enrollments = await Enrollment.find({
         studentId,
